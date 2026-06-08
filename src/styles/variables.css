@@ -1,0 +1,28 @@
+:root {
+  /* Color Palette - Dark Workstation Theme */
+  --bg-dark: #09090b;          /* Zinc 950 */
+  --bg-card: #18181b;          /* Zinc 900 */
+  --bg-hover: #27272a;         /* Zinc 800 */
+  --border-muted: #27272a;     /* Zinc 800 */
+  --text-primary: #f4f4f5;     /* Zinc 100 */
+  --text-muted: #a1a1aa;       /* Zinc 500 */
+  
+  /* Primary Brand Color: Deep Electric Violet */
+  --primary: #8b5cf6;          /* Violet 500 */
+  --primary-hover: #7c3aed;    /* Violet 600 */
+  --primary-light: #c084fc;    /* Violet 400 */
+  --primary-glow: rgba(139, 92, 246, 0.15);
+  
+  /* Piano Specific Tokens */
+  --key-white-bg: #f4f4f5;     /* Zinc 100 */
+  --key-white-pressed: #e4e4e7; /* Zinc 200 */
+  --key-black-bg: #18181b;     /* Zinc 900 */
+  --key-black-pressed: #27272a; /* Zinc 800 */
+
+  /* Timing & Transitions */
+  --transition-fast: 80ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 150ms ease;
+  
+  /* Focus Styles */
+  --focus-ring: 0 0 0 2px var(--bg-dark), 0 0 0 4px var(--primary-light);
+}

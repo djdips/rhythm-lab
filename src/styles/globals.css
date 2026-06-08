@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "./variables.css";
+@import "tailwindcss";
+
+@theme {
+  --color-bg-dark: var(--bg-dark);
+  --color-bg-card: var(--bg-card);
+  --color-bg-hover: var(--bg-hover);
+  --color-border-muted: var(--border-muted);
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+  
+  --color-brand-primary: var(--primary);
+  --color-brand-primary-hover: var(--primary-hover);
+  --color-brand-primary-light: var(--primary-light);
+  
+  --color-piano-white: var(--key-white-bg);
+  --color-piano-white-pressed: var(--key-white-pressed);
+  --color-piano-black: var(--key-black-bg);
+  --color-piano-black-pressed: var(--key-black-pressed);
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Custom global focus styling for clear keyboard accessibility visual states */
+*:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  z-index: 10;
+}
