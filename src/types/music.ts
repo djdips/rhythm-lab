@@ -14,7 +14,7 @@ export interface PianoKeyState {
   readonly isFocused: boolean;
 }
 
-export interface KeyboardMapping {
-  readonly key: string;          // e.g. "KeyA", "KeyW"
-  readonly pitch: string;        // e.g. "C4", "C#4"
+export interface InputMapping {
+  readonly key: string;
+  readonly target: string;
 }

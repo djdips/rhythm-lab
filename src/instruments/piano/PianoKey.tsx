@@ -14,7 +14,7 @@ export const PianoKey: React.FC<PianoKeyProps> = ({
   const { pitch, isAccidental, name } = note;
   
   // Subscribe specifically to this key's pressed state
-  const isPressed = usePlaybackStore((state) => !!state.activeNotes[pitch]);
+  const isPressed = usePlaybackStore((state) => !!state.activeTargets[pitch]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent text highlights and focus outlines from mouse clicks

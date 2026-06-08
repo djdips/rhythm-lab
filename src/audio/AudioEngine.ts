@@ -9,9 +9,37 @@ export class AudioEngine {
     volume: 0.3, // Default master volume
     waveform: 'triangle' // Triangle wave sounds a bit warmer/softer than sine
   };
+  private noiseBuffer: AudioBuffer | null = null;
 
   private constructor() {
     // Singleton pattern
+  }
+
+  private getNoiseBuffer(): AudioBuffer | null {
+    if (!this.ctx) return null;
+
+    if (!this.noiseBuffer) {
+      this.noiseBuffer = this.generateNoiseBuffer();
+    }
+
+    return this.noiseBuffer;
+  }
+
+  private generateNoiseBuffer(): AudioBuffer {
+    const bufferSize = this.ctx.sampleRate * 1;
+    const buffer = this.ctx.createBuffer(
+      1,
+      bufferSize,
+      this.ctx.sampleRate
+    );
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    this.noiseBuffer = buffer;
+    return buffer;
   }
 
   /**
@@ -154,6 +182,134 @@ export class AudioEngine {
       }
     }
   }
+
+  public playDrum(target: string): void {
+  this.initialize();
+
+  if (!this.ctx || !this.masterGain) {
+    return;
+  }
+
+  if (this.ctx.state === 'suspended') {
+    void this.ctx.resume();
+  }
+
+  switch (target) {
+    case 'kick':
+      this.playKick();
+      break;
+
+    case 'snare':
+      this.playSnare();
+      break;
+
+    case 'closed-hihat':
+      this.playHiHat();
+      break;
+
+    case 'crash':
+      this.playCrash();
+      break;
+  }
+}
+
+private playKick(): void {
+  if (!this.ctx || !this.masterGain) return;
+
+  const osc = this.ctx.createOscillator();
+  const gain = this.ctx.createGain();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(60, this.ctx.currentTime);
+
+  gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    this.ctx.currentTime + 0.5
+  );
+
+  osc.connect(gain);
+  gain.connect(this.masterGain);
+  osc.start();
+  osc.stop(this.ctx.currentTime + 0.5);
+}
+
+private playSnare(): void {
+  if (!this.ctx || !this.masterGain) return;
+
+  // White noise burst
+  const noise = this.ctx.createBufferSource();
+  const noiseGain = this.ctx.createGain();
+  noise.buffer = this.getNoiseBuffer();
+
+  noiseGain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+  noiseGain.gain.exponentialRampToValueAtTime(
+    0.001,
+    this.ctx.currentTime + 0.3
+  );
+
+  noise.connect(noiseGain);
+  noiseGain.connect(this.masterGain);
+  noise.start(0);
+
+  // Low-frequency pitch burst (decaying rapidly)
+  const osc = this.ctx.createOscillator();
+  const oscGain = this.ctx.createGain();
+
+  osc.type = 'square';
+  osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+
+  oscGain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+  oscGain.gain.exponentialRampToValueAtTime(
+    0.001,
+    this.ctx.currentTime + 0.25
+  );
+
+  osc.connect(oscGain);
+  oscGain.connect(this.masterGain);
+  osc.start(0);
+  osc.stop(this.ctx.currentTime + 0.25);
+}
+
+private playHiHat(): void {
+  if (!this.ctx || !this.masterGain) return;
+
+  const noise = this.ctx.createBufferSource();
+  const gain = this.ctx.createGain();
+
+  noise.buffer = this.getNoiseBuffer();
+
+  gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    this.ctx.currentTime + 0.2
+  );
+
+  noise.connect(gain);
+  gain.connect(this.masterGain);
+  noise.start(0);
+  noise.stop(this.ctx.currentTime + 0.2);
+}
+
+private playCrash(): void {
+  if (!this.ctx || !this.masterGain) return;
+
+  const noise = this.ctx.createBufferSource();
+  const gain = this.ctx.createGain();
+
+  noise.buffer = this.getNoiseBuffer();
+
+  gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    this.ctx.currentTime + 1.5
+  );
+
+  noise.connect(gain);
+  gain.connect(this.masterGain);
+  noise.start(0);
+  noise.stop(this.ctx.currentTime + 1.5);
+}
 
   /**
    * Return the current configuration settings
