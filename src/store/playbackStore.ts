@@ -1,34 +1,34 @@
 import { create } from 'zustand';
 
 export interface PlaybackState {
-  readonly activeNotes: Readonly<Record<string, boolean>>;
-  readonly triggerNoteOn: (pitch: string) => void;
-  readonly triggerNoteOff: (pitch: string) => void;
-  readonly clearAllActiveNotes: () => void;
+  readonly activeTargets: Readonly<Record<string, boolean>>;
+  readonly triggerTargetOn: (target: string) => void;
+  readonly triggerTargetOff: (target: string) => void;
+  readonly clearAllActiveTargets: () => void;
 }
 
 export const usePlaybackStore = create<PlaybackState>((set) => ({
-  activeNotes: {},
+  activeTargets: {},
 
-  triggerNoteOn: (pitch) =>
+  triggerTargetOn: (target) =>
     set((state) => ({
-      activeNotes: {
-        ...state.activeNotes,
-        [pitch]: true
+      activeTargets: {
+        ...state.activeTargets,
+        [target]: true
       }
     })),
 
-  triggerNoteOff: (pitch) =>
+  triggerTargetOff: (target) =>
     set((state) => ({
-      activeNotes: {
-        ...state.activeNotes,
-        [pitch]: false
+      activeTargets: {
+        ...state.activeTargets,
+        [target]: false
       }
     })),
 
-  clearAllActiveNotes: () =>
+  clearAllActiveTargets: () =>
     set({
-      activeNotes: {}
+      activeTargets: {}
     })
 }));
 export default usePlaybackStore;

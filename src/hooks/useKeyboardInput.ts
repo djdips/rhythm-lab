@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useAudioEngine } from './useAudioEngine';
-import { KEY_TO_PITCH } from '../constants/keyboardMappings';
+import { useCurrentInstrumentMappings } from './useCurrentInstrumentMappings';
 
 export const useKeyboardInput = () => {
-  const { playNote, stopNote } = useAudioEngine();
+  const { playTarget, stopTarget } = useAudioEngine();
+
+  const { keyMap } = useCurrentInstrumentMappings();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -25,16 +27,16 @@ export const useKeyboardInput = () => {
       // Block OS key-repeat events to prevent re-triggering audio node creation
       if (event.repeat) return;
 
-      const pitch = KEY_TO_PITCH[event.code];
-      if (pitch) {
-        playNote(pitch);
+      const target = keyMap[event.code];
+      if (target) {
+        playTarget(target);
       }
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      const pitch = KEY_TO_PITCH[event.code];
-      if (pitch) {
-        stopNote(pitch);
+      const target = keyMap[event.code];
+      if (target) {
+        stopTarget(target);
       }
     };
 
@@ -45,7 +47,7 @@ export const useKeyboardInput = () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [playNote, stopNote]);
+  }, [playTarget, stopTarget, keyMap]);
 };
 
 export default useKeyboardInput;

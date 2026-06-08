@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
 import type { WaveformType } from '@/audio/types';
 import { InstrumentSelector } from '@/components/InstrumentSelector/InstrumentSelector';
-import Piano from '@/instruments/piano/Piano';
-import useInstrumentStore from '@/store/instrumentStore';
+import { InstrumentWorkspace } from '@/components/InstrumentWorkspace/InstrumentWorkspace';
+import { InstrumentHelp } from '@/components/InstrumentHelp/InstrumentHelp';
 
 export const HomePage: React.FC = () => {
-  const currentInstrument = useInstrumentStore(
-    (state) => state.currentInstrument
-  );
   const { setVolume, setWaveform, getSettings } = useAudioEngine();
   const [volume, setVol] = useState(30);
   const [waveform, setWave] = useState<WaveformType>('triangle');
@@ -37,15 +34,6 @@ export const HomePage: React.FC = () => {
     { type: 'sawtooth', label: 'Sawtooth', icon: '⚡' },
     { type: 'square', label: 'Square', icon: '■' }
   ];
-
-  const renderSelectedInstrument = () => {
-    switch (currentInstrument) {
-      case 'piano':
-        return <Piano />;
-      default:
-        return <Piano />;
-    }
-  };
 
   return (
     <div className="relative min-h-screen bg-bg-dark text-text-primary overflow-hidden flex flex-col justify-between">
@@ -134,11 +122,11 @@ export const HomePage: React.FC = () => {
 
           {/* Instrument Workspace */}
           <div className="py-4 bg-bg-dark/40 rounded-xl border border-border-muted/30">
-            {renderSelectedInstrument()}
+            <InstrumentWorkspace />
           </div>
 
           {/* Quick Start / Help Sheet */}
-          <div className="mt-6 flex flex-col md:flex-row gap-4 items-center justify-between p-4 bg-bg-dark/50 border border-border-muted/40 rounded-xl text-sm">
+          {/* <div className="mt-6 flex flex-col md:flex-row gap-4 items-center justify-between p-4 bg-bg-dark/50 border border-border-muted/40 rounded-xl text-sm">
             <div className="flex items-center gap-3">
               <span className="text-xl">⌨️</span>
               <div>
@@ -158,7 +146,8 @@ export const HomePage: React.FC = () => {
                 <span className="font-bold">Black Keys (C# D# F# G# A#)</span>
               </div>
             </div>
-          </div>
+          </div> */}
+          <InstrumentHelp />
 
         </div>
       </main>

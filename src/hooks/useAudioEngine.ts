@@ -3,33 +3,49 @@ import { AudioEngine } from '../audio/AudioEngine';
 import { NOTE_MAP } from '../constants/notes';
 import type { WaveformType } from '../audio/types';
 import usePlaybackStore from '../store/playbackStore';
+import { DRUM_TARGETS } from '@/instruments/drum-kit/drum.constants';
 
 export const useAudioEngine = () => {
   const audioEngine = AudioEngine.getInstance();
-  const triggerNoteOn = usePlaybackStore((state) => state.triggerNoteOn);
-  const triggerNoteOff = usePlaybackStore((state) => state.triggerNoteOff);
+  const triggerTargetOn = usePlaybackStore((state) => state.triggerTargetOn);
+  const triggerTargetOff = usePlaybackStore((state) => state.triggerTargetOff);
 
-  const playNote = useCallback(
-    (pitch: string) => {
-      const note = NOTE_MAP[pitch];
-      if (!note) return;
+  const playTarget = useCallback(
+    (target: string) => {
+      const note = NOTE_MAP[target];
+      if (note) {
+        // Update Zustand visual state
+        triggerTargetOn(target);
+        // Synthesize audio
+        audioEngine.startNote(target, note.frequency);
 
-      // Update Zustand visual state
-      triggerNoteOn(pitch);
-      // Synthesize audio
-      audioEngine.startNote(pitch, note.frequency);
+        return;
+      }
+
+      if (DRUM_TARGETS.has(target)) {
+        // Update Zustand visual state
+        triggerTargetOn(target);
+        // Play drum
+        audioEngine.playDrum(target);
+
+        setTimeout(() => {
+          triggerTargetOff(target);
+        }, 300);
+
+        return;
+      }
     },
-    [triggerNoteOn, audioEngine]
+    [triggerTargetOn, audioEngine, triggerTargetOff]
   );
 
-  const stopNote = useCallback(
-    (pitch: string) => {
+  const stopTarget = useCallback(
+    (target: string) => {
       // Update Zustand visual state
-      triggerNoteOff(pitch);
+      triggerTargetOff(target);
       // Dampen audio oscillator
-      audioEngine.stopNote(pitch);
+      audioEngine.stopNote(target);
     },
-    [triggerNoteOff, audioEngine]
+    [triggerTargetOff, audioEngine]
   );
 
   const setVolume = useCallback(
@@ -51,8 +67,8 @@ export const useAudioEngine = () => {
   }, [audioEngine]);
 
   return {
-    playNote,
-    stopNote,
+    playTarget,
+    stopTarget,
     setVolume,
     setWaveform,
     getSettings

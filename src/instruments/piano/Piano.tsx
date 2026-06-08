@@ -1,23 +1,25 @@
 import React from 'react';
-import { OCTAVE_4_NOTES } from '../../constants/notes';
-import { PITCH_TO_KEY } from '../../constants/keyboardMappings';
-import { useAudioEngine } from '../../hooks/useAudioEngine';
-import { useKeyboardInput } from '../../hooks/useKeyboardInput';
 import PianoKey from './PianoKey';
 import styles from './Piano.module.css';
+import { OCTAVE_4_NOTES } from '@/constants/notes';
+import { useKeyboardInput } from '@/hooks/useKeyboardInput';
+import { useAudioEngine } from '@/hooks/useAudioEngine';
+import { useCurrentInstrumentMappings } from '@/hooks/useCurrentInstrumentMappings';
 
 export const Piano: React.FC = () => {
   // Bind QWERTY keyboard listeners
   useKeyboardInput();
 
-  const { playNote, stopNote } = useAudioEngine();
+  const { playTarget, stopTarget } = useAudioEngine();
+
+  const { targetMap } = useCurrentInstrumentMappings();
 
   const whiteNotes = OCTAVE_4_NOTES.filter((note) => !note.isAccidental);
   const blackNotes = OCTAVE_4_NOTES.filter((note) => note.isAccidental);
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8">
-      <div 
+      <div
         className={styles.keyboard}
         role="group"
         aria-label="Interactive Piano Keyboard, Octave 4"
@@ -27,9 +29,9 @@ export const Piano: React.FC = () => {
           <PianoKey
             key={note.pitch}
             note={note}
-            onPlay={playNote}
-            onRelease={stopNote}
-            keyboardLabel={PITCH_TO_KEY[note.pitch]}
+            onPlay={playTarget}
+            onRelease={stopTarget}
+            keyboardLabel={targetMap[note.pitch]}
           />
         ))}
 
@@ -38,9 +40,9 @@ export const Piano: React.FC = () => {
           <PianoKey
             key={note.pitch}
             note={note}
-            onPlay={playNote}
-            onRelease={stopNote}
-            keyboardLabel={PITCH_TO_KEY[note.pitch]}
+            onPlay={playTarget}
+            onRelease={stopTarget}
+            keyboardLabel={targetMap[note.pitch]}
           />
         ))}
       </div>
