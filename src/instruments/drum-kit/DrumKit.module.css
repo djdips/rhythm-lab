@@ -1,16 +1,23 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(180px, 1fr));
+
+  grid-template-columns:
+    1fr 1fr 1fr;
+
+  grid-template-areas:
+    ". crash ."
+    "hihat snare ."
+    ". kick .";
+
   gap: 1rem;
 
-  width: 100%;
   max-width: 800px;
-
   margin: 0 auto;
 }
 
 .pad {
   position: relative;
+  cursor: pointer;
 
   min-height: 180px;
 
@@ -22,15 +29,12 @@
 
   border-radius: 1rem;
 
-  border: 1px solid
-    rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
   background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.03),
-      rgba(255,255,255,0.01)
-    );
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.01));
 
   transition:
     transform 150ms ease,
@@ -40,29 +44,103 @@
 
 .pad:hover {
   transform: translateY(-2px);
+
   border-color:
-    rgba(139,92,246,0.5);
+    rgba(139, 92, 246, 0.5);
+
+  box-shadow:
+    0 0 16px rgba(139, 92, 246, 0.15);
+}
+
+.pad:focus-visible {
+  outline: none;
+
+  border-color:
+    rgba(139, 92, 246, 0.9);
+
+  box-shadow:
+    0 0 0 3px rgba(139, 92, 246, 0.25);
 }
 
 .padActive {
-  transform: scale(0.96);
+  transform: scale(0.97);
+
+  border-color:
+    rgba(139, 92, 246, 1);
+
   box-shadow:
-    0 0 24px
-    rgba(139,92,246,0.35);
+    0 0 20px rgba(139, 92, 246, 0.45),
+    0 0 40px rgba(139, 92, 246, 0.25);
+}
+
+.icon {
+  font-size: 2.5rem;
+  line-height: 1;
+
+  margin-bottom: 0.75rem;
+
+  transition:
+    transform 100ms ease;
+
+  user-select: none;
+  pointer-events: none;
+}
+
+.padActive .icon {
+  transform: scale(1.15);
 }
 
 .label {
-   margin-top: 0.5rem;
-
-  font-weight: 700;
-
   font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .keyLabel {
-  font-size: 2rem;
+  position: absolute;
+
+  top: 1rem;
+  right: 1rem;
+
+  padding: 0.25rem 0.5rem;
+
+  border-radius: 0.5rem;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: rgba(255, 255, 255, 0.04);
+
+  font-size: 0.8rem;
 
   font-family: monospace;
 
   color: var(--brand-primary);
+}
+
+.kick {
+  grid-area: kick;
+  min-height: 220px;
+}
+
+.snare {
+  grid-area: snare;
+}
+
+.hihat {
+  grid-area: hihat;
+}
+
+.crash {
+  grid-area: crash;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+
+    grid-template-areas:
+      "crash"
+      "hihat"
+      "snare"
+      "kick";
+  }
 }
